@@ -812,3 +812,384 @@
 </body>
 </html>
 ```
+```html
+<!-- УГОЛОК ТВОРЧЕСТВА -->
+
+<section class="creative" id="creative">
+
+    <div class="container">
+
+        <h2 class="section-title">🎨 Уголок творчества</h2>
+
+        <p class="section-subtitle">
+            Здесь можно дать волю фантазии — рисуй всё, что захочешь!
+        </p>
+
+        <div class="drawing-box">
+
+            <div class="drawing-tools">
+
+                <label>
+                    Размер кисти:
+                    <input
+                        type="range"
+                        id="brushSize"
+                        min="1"
+                        max="40"
+                        value="5">
+                </label>
+
+                <button onclick="clearCanvas()">
+                    🗑️ Очистить
+                </button>
+
+                <button onclick="toggleEraser()" id="eraserButton">
+                    🧽 Ластик
+                </button>
+
+            </div>
+
+            <canvas id="drawingCanvas"></canvas>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<style>
+
+    /* ---------- УГОЛОК ТВОРЧЕСТВА ---------- */
+
+    .creative {
+        background:
+            radial-gradient(
+                circle at 20% 30%,
+                #252b62,
+                transparent 35%
+            ),
+            radial-gradient(
+                circle at 80% 70%,
+                #41255d,
+                transparent 35%
+            ),
+            #080d1c;
+    }
+
+    .drawing-box {
+        max-width: 1000px;
+        margin: auto;
+        padding: 20px;
+
+        background: rgba(255,255,255,.05);
+
+        border: 1px solid rgba(255,255,255,.1);
+        border-radius: 25px;
+
+        box-shadow:
+            0 20px 60px rgba(0,0,0,.35);
+    }
+
+    .drawing-tools {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        flex-wrap: wrap;
+        margin-bottom: 18px;
+    }
+
+    .drawing-tools label {
+        color: #c9cee0;
+    }
+
+    .drawing-tools input {
+        vertical-align: middle;
+        cursor: pointer;
+    }
+
+    .drawing-tools button {
+        border: none;
+        padding: 11px 18px;
+
+        border-radius: 10px;
+
+        color: white;
+        background: #6f7fff;
+
+        cursor: pointer;
+
+        font-size: 15px;
+
+        transition: .25s;
+    }
+
+    .drawing-tools button:hover {
+        transform: translateY(-2px);
+        background: #8794ff;
+    }
+
+    #drawingCanvas {
+        display: block;
+
+        width: 100%;
+        height: 500px;
+
+        background: white;
+
+        border-radius: 16px;
+
+        cursor: crosshair;
+
+        touch-action: none;
+    }
+
+    @media (max-width: 600px) {
+
+        #drawingCanvas {
+            height: 400px;
+        }
+
+        .drawing-tools {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+    }
+
+</style>
+
+
+<script>
+
+    const canvas = document.getElementById("drawingCanvas");
+    const ctx = canvas.getContext("2d");
+
+    const brushSize =
+        document.getElementById("brushSize");
+
+    const eraserButton =
+        document.getElementById("eraserButton");
+
+    let drawing = false;
+    let eraser = false;
+
+
+    // Настройка размера canvas
+    function resizeCanvas() {
+
+        const rect = canvas.getBoundingClientRect();
+
+        const oldImage =
+            canvas.width > 0 && canvas.height > 0
+            ? canvas.toDataURL()
+            : null;
+
+        canvas.width = rect.width;
+        canvas.height = rect.height;
+
+        ctx.lineCap = "round";
+        ctx.lineJoin = "round";
+
+        if (oldImage) {
+
+            const image = new Image();
+
+            image.onload = function() {
+                ctx.drawImage(
+                    image,
+                    0,
+                    0,
+                    canvas.width,
+                    canvas.height
+                );
+            };
+
+            image.src = oldImage;
+        }
+    }
+
+
+    resizeCanvas();
+
+    window.addEventListener(
+        "resize",
+        resizeCanvas
+    );
+
+
+    // Получаем координаты мыши или пальца
+    function getPosition(event) {
+
+        const rect =
+            canvas.getBoundingClientRect();
+
+        let x;
+        let y;
+
+        if (event.touches) {
+
+            x =
+                event.touches[0].clientX
+                - rect.left;
+
+            y =
+                event.touches[0].clientY
+                - rect.top;
+
+        } else {
+
+            x =
+                event.clientX
+                - rect.left;
+
+            y =
+                event.clientY
+                - rect.top;
+        }
+
+        return { x, y };
+    }
+
+
+    // Начало рисования
+    function startDrawing(event) {
+
+        event.preventDefault();
+
+        drawing = true;
+
+        const pos = getPosition(event);
+
+        ctx.beginPath();
+
+        ctx.moveTo(
+            pos.x,
+            pos.y
+        );
+    }
+
+
+    // Рисование
+    function draw(event) {
+
+        if (!drawing) return;
+
+        event.preventDefault();
+
+        const pos = getPosition(event);
+
+        ctx.lineWidth =
+            brushSize.value;
+
+        if (eraser) {
+
+            ctx.strokeStyle = "white";
+
+        } else {
+
+            ctx.strokeStyle = "#171c35";
+        }
+
+        ctx.lineTo(
+            pos.x,
+            pos.y
+        );
+
+        ctx.stroke();
+    }
+
+
+    // Остановка
+    function stopDrawing() {
+
+        drawing = false;
+
+        ctx.closePath();
+    }
+
+
+    // Мышь
+    canvas.addEventListener(
+        "mousedown",
+        startDrawing
+    );
+
+    canvas.addEventListener(
+        "mousemove",
+        draw
+    );
+
+    canvas.addEventListener(
+        "mouseup",
+        stopDrawing
+    );
+
+    canvas.addEventListener(
+        "mouseleave",
+        stopDrawing
+    );
+
+
+    // Телефон / планшет
+    canvas.addEventListener(
+        "touchstart",
+        startDrawing,
+        { passive: false }
+    );
+
+    canvas.addEventListener(
+        "touchmove",
+        draw,
+        { passive: false }
+    );
+
+    canvas.addEventListener(
+        "touchend",
+        stopDrawing
+    );
+
+
+    // Очистить холст
+    function clearCanvas() {
+
+        ctx.clearRect(
+            0,
+            0,
+            canvas.width,
+            canvas.height
+        );
+
+        ctx.fillStyle = "white";
+
+        ctx.fillRect(
+            0,
+            0,
+            canvas.width,
+            canvas.height
+        );
+    }
+
+
+    // Ластик
+    function toggleEraser() {
+
+        eraser = !eraser;
+
+        if (eraser) {
+
+            eraserButton.textContent =
+                "✏️ Кисть";
+
+        } else {
+
+            eraserButton.textContent =
+                "🧽 Ластик";
+        }
+    }
+
+
+    // Белый фон при запуске
+    clearCanvas();
+
+</script>
+```
