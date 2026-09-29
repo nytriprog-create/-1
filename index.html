@@ -1221,7 +1221,7 @@
     box.innerHTML = `
       <div style="text-align:center">
         <h2>🐍 NYTRI SNAKE</h2>
-        <p>Очки: <span id="nytriScore">0</span> / 50</p>
+        <p>Очки: <span id="nytriScore">0</span> / 20</p>
         <canvas id="nytriCanvas"
           width="360"
           height="360"
@@ -1286,8 +1286,8 @@
         scoreText.textContent = score;
         food = randomFood();
 
-        if (score >= 50) {
-          alert("🎉 Поздравляю! Ты набрал 50 очков!");
+        if (score >= 20) {
+          alert("🎉 Поздравляю! Ты набрал 20 очков!");
           document.body.style.cursor =
             ["crosshair", "wait", "cell", "grab"][
               Math.floor(Math.random() * 4)
