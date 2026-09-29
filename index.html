@@ -802,8 +802,7 @@
     </div>
 
 </section>
-
-
+```html
 <!-- УГОЛОК ТВОРЧЕСТВА -->
 
 <section class="creative" id="creative">
@@ -1097,6 +1096,94 @@
 
         ctx.closePath();
     }
-<script>
+
+
+    // Мышь
+    canvas.addEventListener(
+        "mousedown",
+        startDrawing
+    );
+
+    canvas.addEventListener(
+        "mousemove",
+        draw
+    );
+
+    canvas.addEventListener(
+        "mouseup",
+        stopDrawing
+    );
+
+    canvas.addEventListener(
+        "mouseleave",
+        stopDrawing
+    );
+
+
+    // Телефон / планшет
+    canvas.addEventListener(
+        "touchstart",
+        startDrawing,
+        { passive: false }
+    );
+
+    canvas.addEventListener(
+        "touchmove",
+        draw,
+        { passive: false }
+    );
+
+    canvas.addEventListener(
+        "touchend",
+        stopDrawing
+    );
+
+
+    // Очистить холст
+    function clearCanvas() {
+
+        ctx.clearRect(
+            0,
+            0,
+            canvas.width,
+            canvas.height
+        );
+
+        ctx.fillStyle = "white";
+
+        ctx.fillRect(
+            0,
+            0,
+            canvas.width,
+            canvas.height
+        );
+    }
+
+
+    // Ластик
+    function toggleEraser() {
+
+        eraser = !eraser;
+
+        if (eraser) {
+
+            eraserButton.textContent =
+                "✏️ Кисть";
+
+        } else {
+
+            eraserButton.textContent =
+                "🧽 Ластик";
+        }
+    }
+
+
+    // Белый фон при запуске
+    clearCanvas();
+
+</script>
+```
+
+
 
 </html>
