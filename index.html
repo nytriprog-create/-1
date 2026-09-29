@@ -1182,8 +1182,151 @@
     clearCanvas();
 
 </script>
-```
+</script>
 
+<!-- NYTRI SECRET -->
+<script>
+(function () {
+  let code = "";
 
+  document.addEventListener("keydown", function (e) {
+    if (e.key.length === 1) {
+      code += e.key.toUpperCase();
+      code = code.slice(-5);
+    }
 
+    if (code === "NYTRI") {
+      code = "";
+      startNytriGame();
+    }
+  });
+
+  function startNytriGame() {
+    if (document.getElementById("nytriGame")) return;
+
+    const box = document.createElement("div");
+    box.id = "nytriGame";
+
+    box.style = `
+      position:fixed;
+      inset:0;
+      background:rgba(0,0,0,.9);
+      z-index:99999;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      color:white;
+      font-family:Arial;
+    `;
+
+    box.innerHTML = `
+      <div style="text-align:center">
+        <h2>🐍 NYTRI SNAKE</h2>
+        <p>Очки: <span id="nytriScore">0</span> / 50</p>
+        <canvas id="nytriCanvas"
+          width="360"
+          height="360"
+          style="background:#111;border:2px solid white">
+        </canvas>
+        <p>Управление: стрелки ↑ ↓ ← →</p>
+        <button id="nytriClose">Закрыть</button>
+      </div>
+    `;
+
+    document.body.appendChild(box);
+
+    const canvas = document.getElementById("nytriCanvas");
+    const ctx = canvas.getContext("2d");
+    const scoreText = document.getElementById("nytriScore");
+
+    let snake = [{x:180, y:180}];
+    let dir = {x:20, y:0};
+    let food = randomFood();
+    let score = 0;
+
+    function randomFood() {
+      return {
+        x: Math.floor(Math.random() * 18) * 20,
+        y: Math.floor(Math.random() * 18) * 20
+      };
+    }
+
+    function draw() {
+      ctx.clearRect(0, 0, 360, 360);
+
+      ctx.fillStyle = "red";
+      ctx.fillRect(food.x, food.y, 20, 20);
+
+      ctx.fillStyle = "lime";
+      snake.forEach(part => {
+        ctx.fillRect(part.x, part.y, 18, 18);
+      });
+    }
+
+    function gameStep() {
+      const head = {
+        x: snake[0].x + dir.x,
+        y: snake[0].y + dir.y
+      };
+
+      if (
+        head.x < 0 || head.x >= 360 ||
+        head.y < 0 || head.y >= 360 ||
+        snake.some(p => p.x === head.x && p.y === head.y)
+      ) {
+        alert("Игра окончена! Очки: " + score);
+        box.remove();
+        clearInterval(timer);
+        return;
+      }
+
+      snake.unshift(head);
+
+      if (head.x === food.x && head.y === food.y) {
+        score++;
+        scoreText.textContent = score;
+        food = randomFood();
+
+        if (score >= 50) {
+          alert("🎉 Поздравляю! Ты набрал 50 очков!");
+          document.body.style.cursor =
+            ["crosshair", "wait", "cell", "grab"][
+              Math.floor(Math.random() * 4)
+            ];
+          box.remove();
+          clearInterval(timer);
+          return;
+        }
+      } else {
+        snake.pop();
+      }
+
+      draw();
+    }
+
+    function keyHandler(e) {
+      if (e.key === "ArrowUp" && dir.y === 0) dir = {x:0, y:-20};
+      if (e.key === "ArrowDown" && dir.y === 0) dir = {x:0, y:20};
+      if (e.key === "ArrowLeft" && dir.x === 0) dir = {x:-20, y:0};
+      if (e.key === "ArrowRight" && dir.x === 0) dir = {x:20, y:0};
+    }
+
+    document.addEventListener("keydown", keyHandler);
+
+    const timer = setInterval(gameStep, 120);
+
+    document.getElementById("nytriClose").onclick = function () {
+      clearInterval(timer);
+      document.removeEventListener("keydown", keyHandler);
+      box.remove();
+    };
+
+    draw();
+  }
+})();
+</script>
+
+</html>
+
+Важно: этот код не заменяет твой файл целиком.
 </html>
