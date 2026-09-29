@@ -1285,47 +1285,52 @@
         score++;
         scoreText.textContent = score;
         food = randomFood();
+          
+       if (score >= 20) {
+  clearInterval(timer);
+  document.removeEventListener("keydown", keyHandler);
 
-        if (score >= 20) {
-          alert("🎉 Поздравляю! Ты набрал 20 очков!");
-       const nytriCursors = ["crosshair", "wait", "cell", "grab"];
-const nytriCursor =
-  nytriCursors[Math.floor(Math.random() * nytriCursors.length)];
+  box.remove();
 
-document.documentElement.style.cursor = nytriCursor;
-document.body.style.cursor = nytriCursor;
-box.style.cursor = nytriCursor;
+  // 🎯 Награда
+  document.documentElement.style.cursor = "crosshair";
+  document.body.style.cursor = "crosshair";
 
-box.querySelectorAll("*").forEach(function (el) {
-  el.style.cursor = nytriCursor;
-});
-          box.remove();
-          clearInterval(timer);
-          return;
-        }
-      } else {
-        snake.pop();
-      }
+  // ✨ Космический эффект
+  const effect = document.createElement("div");
 
-      draw();
-    }
+  effect.innerHTML = `
+    <div style="
+      position:fixed;
+      inset:0;
+      z-index:100000;
+      pointer-events:none;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      background:radial-gradient(circle,rgba(80,40,180,.35),transparent 60%);
+    ">
+      <div style="
+        color:white;
+        font-size:28px;
+        font-weight:bold;
+        text-align:center;
+        text-shadow:0 0 20px #8f6cff;
+      ">
+        🚀<br>
+        Ты открыл секрет NYTRI!
+      </div>
+    </div>
+  `;
 
-    function keyHandler(e) {
-      if (e.key === "ArrowUp" && dir.y === 0) dir = {x:0, y:-20};
-      if (e.key === "ArrowDown" && dir.y === 0) dir = {x:0, y:20};
-      if (e.key === "ArrowLeft" && dir.x === 0) dir = {x:-20, y:0};
-      if (e.key === "ArrowRight" && dir.x === 0) dir = {x:20, y:0};
-    }
+  document.body.appendChild(effect);
 
-    document.addEventListener("keydown", keyHandler);
+  setTimeout(function () {
+    effect.remove();
+  }, 2500);
 
-    const timer = setInterval(gameStep, 200);
-
-    document.getElementById("nytriClose").onclick = function () {
-      clearInterval(timer);
-      document.removeEventListener("keydown", keyHandler);
-      box.remove();,
-    };
+  return;
+}
 
     draw();
   }
