@@ -1288,10 +1288,17 @@
 
         if (score >= 20) {
           alert("🎉 Поздравляю! Ты набрал 20 очков!");
-          document.body.style.cursor =
-            ["crosshair", "wait", "cell", "grab"][
-              Math.floor(Math.random() * 4)
-            ];
+       const nytriCursors = ["crosshair", "wait", "cell", "grab"];
+const nytriCursor =
+  nytriCursors[Math.floor(Math.random() * nytriCursors.length)];
+
+document.documentElement.style.cursor = nytriCursor;
+document.body.style.cursor = nytriCursor;
+box.style.cursor = nytriCursor;
+
+box.querySelectorAll("*").forEach(function (el) {
+  el.style.cursor = nytriCursor;
+});
           box.remove();
           clearInterval(timer);
           return;
@@ -1317,7 +1324,7 @@
     document.getElementById("nytriClose").onclick = function () {
       clearInterval(timer);
       document.removeEventListener("keydown", keyHandler);
-      box.remove();
+      box.remove();,
     };
 
     draw();
